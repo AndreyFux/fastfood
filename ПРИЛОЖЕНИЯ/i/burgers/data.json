@@ -656,7 +656,7 @@
     {
       "name": "Цезарь",
       "description": "С куриным филе, салатом, сыром Пармезан и сухариками",
-      "image": "i/salads/salad.png",
+      "image": "/i/salads/salad.png",
       "price": 135,
       "category": "salads",
       "market": "sfc",
@@ -666,7 +666,7 @@
 	{
       "name": "Лукошко",
       "description": "С куриным филе, жареными грибочками, соленым огурцами и сыром",
-      "image": "i/salads/lukoshko.png",
+      "image": "/i/salads/lukoshko.png",
       "price": 125,
       "category": "salads",
       "market": "sfc",
@@ -676,7 +676,7 @@
 	{
       "name": "Салат с тунцом",
       "description": "Тунец с салатом, болгарским перцем, маслинами и кукурузой",
-      "image": "i/salads/saladtun.png",
+      "image": "/i/salads/saladtun.png",
       "price": 143,
       "category": "salads",
       "market": "sfc",
@@ -686,7 +686,7 @@
     {
       "name": "Курица с яблоком и апельсином",
       "description": "салат, яблоко, апельсин, огурец свежий, куриное филе",
-      "image": "i/salads/salad.png",
+      "image": "/i/salads/salad.png",
       "price": 120,
       "category": "salads",
       "market": "sfc",
@@ -696,7 +696,7 @@
     {
       "name": "Курица с грецким орехом и черносливом",
       "description": "салат, орех, чернослив, куриное филе с чесночным соусом",
-      "image": "i/salads/salad.png",
+      "image": "/i/salads/salad.png",
       "price": 120,
       "category": "salads",
       "market": "sfc",
@@ -706,7 +706,7 @@
     {
       "name": "Салат греческий",
       "description": "Салат, помидоры, огурцы, маслины, болгар. перец, Фета",
-      "image": "i/salads/salad.png",
+      "image": "/i/salads/salad.png",
       "price": 130,
       "category": "salads",
       "market": "sfc",
@@ -716,7 +716,7 @@
     {
       "name": "Мини-тортилья",
       "description": "Мини-лепешка, куриное филе, сыр, салат, помидор",
-      "image": "i/salads/tortiliya.png",
+      "image": "/i/salads/tortiliya.png",
       "price": 65,
       "category": "salads",
       "market": "sfc",
@@ -726,7 +726,7 @@
     {
       "name": "Тортилья SFC",
       "description": "Куриное филе SFC, салат, помидор, сыр, майонез",
-      "image": "i/salads/tortiliya.png",
+      "image": "/i/salads/tortiliya.png",
       "price": 120,
       "category": "salads",
       "market": "sfc",
@@ -736,7 +736,7 @@
     {
       "name": "Тортилья пири-пири",
       "description": "С острой курицей Пири-пири, салат, помидор, майонез, сыр",
-      "image": "i/salads/tortiliya.png",
+      "image": "/i/salads/tortiliya.png",
       "price": 130,
       "category": "salads",
       "market": "sfc",
@@ -897,7 +897,7 @@
       "market": "doner",
       "type": "single",
       "weight": 1
-    },    
+    },
     {
       "name": "Фахитос с курицей",
       "description": "Курица, мексиканская смесь, соус гуакамоле, грибы, маслины",
