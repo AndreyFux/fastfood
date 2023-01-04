@@ -109,29 +109,34 @@ function displayProducts(clickedElement) {
             const priseString = document.getElementsByClassName("basket__prise")[0];
 
             basketButton.onclick = () => {
-                if (item.category === PRODUCT_INITIAL_VALUE) {
-                    //при нажатии на  sandwitch открываем модалку на начальном элементе
-                    const activeElement = document.getElementsByClassName(
-                        "dialog__element__active"
-                    )[0];
+                if (count > 0) {
+                    if (item.category === PRODUCT_INITIAL_VALUE) {
+                        //при нажатии на  sandwitch открываем модалку на начальном элементе
+                        const activeElement = document.getElementsByClassName(
+                            "dialog__element__active"
+                        )[0];
 
-                    if (activeElement.id !== "sizes") {
-                        const newActiveElement = document.getElementById("sizes");
-                        activeElement.classList.remove("dialog__element__active");
-                        newActiveElement.classList.add("dialog__element__active");
-                        previousDialogButton.classList.add("dialog__button__none");
+                        if (activeElement.id !== "sizes") {
+                            const newActiveElement = document.getElementById("sizes");
+                            activeElement.classList.remove("dialog__element__active");
+                            newActiveElement.classList.add("dialog__element__active");
+                            previousDialogButton.classList.add("dialog__button__none");
+                        }
+                        dialog.showModal();
+                        displayAdditive(data.sizes, item.price, "sizes");
+                        additions.name = item.name;
+                        additions.count = count;
+                    } else {
+                        //при нажатии на  другие элементу просто добавляем в общий массив
+                        finalProductList.push({
+                            name: item.name,
+                            count: count,
+                        });
+                        displaySelectedItems();
+                        totalPrice += count * item.price;
+                        // additions.price = count * item.price;   зачем???
+                        priseString.innerHTML = `Итого: ${totalPrice} руб`;
                     }
-                    dialog.showModal();
-                    displayAdditive(data.sizes, item.price, "sizes");
-                    additions.name = item.name;
-                    additions.count = count;
-                } else {
-                    //при нажатии на  другие элементу просто добавляем в общий массив
-                    finalProductList.push({ name: item.name, count: count });
-                    displaySelectedItems();
-                    totalPrice += count * item.price;
-                    // additions.price = count * item.price;   зачем???
-                    priseString.innerHTML = `Итого: ${totalPrice} руб`;
                 }
             };
 
@@ -351,12 +356,14 @@ function displayReady() {
     };
 
     basketButton.onclick = () => {
-        dialog.close();
-        finalProductList.push({ name: additions.name, count: count });
-        displaySelectedItems();
-        totalPrice += count * additions.price;
-        priseString.innerHTML = `Итого: ${totalPrice} руб`;
-        additions.price = count * additions.price;
+        if (count > 0) {
+            dialog.close();
+            finalProductList.push({ name: additions.name, count: count });
+            displaySelectedItems();
+            totalPrice += count * additions.price;
+            priseString.innerHTML = `Итого: ${totalPrice} руб`;
+            additions.price = count * additions.price;
+        }
     };
 
     input.oninput = () => {
