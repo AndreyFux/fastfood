@@ -61,6 +61,7 @@
 .navigation__element:hover {
     background-color: var(--main-bg-color);
     color: white;
+    cursor: pointer;
 }
 
 /* ITEMS */
@@ -146,12 +147,17 @@
     color: white;
 }
 
+.button:hover {
+    cursor: pointer;
+}
+
 .item__button {
     margin: 15px 0 50px;
     background-color: var(--main-bg-color);
 }
 
-.item__button:hover {
+.item__button:hover,
+.result__button:hover {
     background-color: #808080;
 }
 
@@ -183,6 +189,15 @@ body {
     border-radius: 50%;
     background-color: white;
     width: 24px;
+}
+
+.counter__image:hover,
+.counter__input:hover {
+    background-color: #eae8e7;
+}
+
+.counter__image:hover {
+    cursor: pointer;
 }
 
 .counter__container {
@@ -299,7 +314,7 @@ body {
 
 .dialog {
     width: 80%;
-    height: 75%;
+    height: 72%;
     border: none;
     border-radius: 5px;
     padding: 0px;
@@ -369,6 +384,7 @@ body {
 .dialog__size:hover {
     background-color: var(--main-bg-color);
     box-shadow: var(--main-box-shadow);
+    cursor: pointer;
 }
 
 .dialog__content {
