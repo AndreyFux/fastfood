@@ -78,23 +78,23 @@ function displayProducts(clickedElement) {
             counter_container.className = "counter__container";
 
             decrease.className = "counter__decrease";
-            decrease.onclick = () => {
+            decrease.addEventListener("click", () => {
                 count > 1 && count--;
                 input.value = count;
-            };
+            });
 
             increase.className = "counter__increase";
-            increase.onclick = () => {
+            increase.addEventListener("click", () => {
                 count++;
                 input.value = count;
-            };
+            });
 
             input.className = "counter__input";
             input.type = "text";
             input.value = count;
-            input.oninput = () => {
+            input.addEventListener("input", () => {
                 count = input.value;
-            };
+            });
 
             imagePlus.src = `./images/minus.svg`;
             imagePlus.alt = "counter__image";
@@ -108,7 +108,7 @@ function displayProducts(clickedElement) {
 
             const priseString = document.getElementsByClassName("basket__prise")[0];
 
-            basketButton.onclick = () => {
+            basketButton.addEventListener("click", () => {
                 if (count > 0) {
                     if (item.category === PRODUCT_INITIAL_VALUE) {
                         //при нажатии на  sandwitch открываем модалку на начальном элементе
@@ -138,7 +138,7 @@ function displayProducts(clickedElement) {
                         priseString.innerHTML = `Итого: ${totalPrice} руб`;
                     }
                 }
-            };
+            });
 
             decrease.append(imagePlus);
             increase.append(imageMinus);
@@ -150,7 +150,7 @@ function displayProducts(clickedElement) {
     });
 }
 
-navPanel.onclick = (event) => {
+navPanel.addEventListener("click", (event) => {
     const activeElement = document.getElementsByClassName("content__element__active")[0];
     activeElement.classList.remove("content__element__active");
     event.target.classList.add("content__element__active");
@@ -159,7 +159,7 @@ navPanel.onclick = (event) => {
         productContentBlock.removeChild(productContentBlock.firstChild);
     }
     displayProducts(event.target.id);
-};
+});
 
 //ниже функционал переключения между вкладками
 const tabsAdditives = {
@@ -199,7 +199,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
         image.src = `./ПРИЛОЖЕНИЯ${elements[key].image}`;
         image.alt = "image";
         image.className = "image dialog__image";
-        element.onclick = () => {
+        element.addEventListener("click", () => {
             newPrice = additivePrice + oldPrice;
             totalPrice.innerHTML = `Цена: ${newPrice}руб`;
             const activeElement = document.getElementsByClassName(
@@ -212,7 +212,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
                 (additions[activePosition] = elements[key].name),
                 (additions.price = newPrice)
             );
-        };
+        });
 
         element.append(image, size, price);
         elementsContainer.append(element);
@@ -223,7 +223,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
     activePosition === "sizes" && dialogContent.append(totalPrice);
 }
 
-nextDialogButton.onclick = () => {
+nextDialogButton.addEventListener("click", () => {
     const activeElement = document.getElementsByClassName("dialog__element__active")[0];
     const newActiveElement = activeElement.nextSibling.nextSibling;
     activeElement.classList.remove("dialog__element__active");
@@ -235,9 +235,9 @@ nextDialogButton.onclick = () => {
         previousDialogButton.classList.remove("dialog__button__none");
     }
     displayProductParameters(newActiveElement.id);
-};
+});
 
-previousDialogButton.onclick = () => {
+previousDialogButton.addEventListener("click", () => {
     const activeElement = document.getElementsByClassName("dialog__element__active")[0];
     const newActiveElement = activeElement.previousSibling.previousSibling;
     activeElement.classList.remove("dialog__element__active");
@@ -249,14 +249,13 @@ previousDialogButton.onclick = () => {
         nextDialogButton.classList.remove("dialog__button__none");
     }
     displayProductParameters(newActiveElement.id);
-};
+});
 
-dialogPanel.onclick = (event) => {
+dialogPanel.addEventListener("click", (event) => {
     const activeNaigationElement = event.target;
     const activeElement = document.getElementsByClassName("dialog__element__active")[0];
     activeElement.classList.remove("dialog__element__active");
     activeNaigationElement.classList.add("dialog__element__active");
-    console.log(activeNaigationElement.id);
     if (activeNaigationElement.id === "ready") {
         nextDialogButton.classList.add("dialog__button__none");
         previousDialogButton.classList.remove("dialog__button__none");
@@ -268,7 +267,7 @@ dialogPanel.onclick = (event) => {
         previousDialogButton.classList.remove("dialog__button__none");
     }
     displayProductParameters(activeNaigationElement.id);
-};
+});
 
 function displayReady() {
     while (dialogContent.firstChild) {
@@ -342,20 +341,20 @@ function displayReady() {
     imageMinus.alt = "counter__image";
     imageMinus.className = "counter__image";
 
-    decrease.onclick = () => {
+    decrease.addEventListener("click", () => {
         count > 1 && count--;
         input.value = count;
         additions.count = count;
         price.innerHTML = `Цена: ${count * additions.price}руб.`;
-    };
-    increase.onclick = () => {
+    });
+    increase.addEventListener("click", () => {
         count++;
         input.value = count;
         additions.count = count;
         price.innerHTML = `Цена: ${count * additions.price}руб`;
-    };
+    });
 
-    basketButton.onclick = () => {
+    basketButton.addEventListener("click", () => {
         if (count > 0) {
             dialog.close();
             finalProductList.push({ name: additions.name, count: count });
@@ -364,11 +363,11 @@ function displayReady() {
             priseString.innerHTML = `Итого: ${totalPrice} руб`;
             additions.price = count * additions.price;
         }
-    };
+    });
 
-    input.oninput = () => {
+    input.addEventListener("input", () => {
         count = input.value;
-    };
+    });
 
     decrease.append(imagePlus);
     increase.append(imageMinus);
