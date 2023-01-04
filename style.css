@@ -312,6 +312,10 @@ body {
     background: rgba(0, 0, 0, 0.7);
 }
 
+.dialog::-webkit-scrollbar {
+    width: 0;
+}
+
 .dialog {
     width: 80%;
     height: 72%;
