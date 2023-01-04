@@ -26,11 +26,6 @@ const previousDialogButton = document.getElementsByClassName(
     "switching-buttons__previous-button"
 )[0];
 
-let additions = ADDITIONS_INITIAL_VALUE;
-displayProducts(PRODUCT_INITIAL_VALUE);
-const finalProductList = [];
-let totalPrice = 0;
-
 function displayProducts(clickedElement) {
     data.menu.forEach((item) => {
         let count = 1;
@@ -150,6 +145,11 @@ function displayProducts(clickedElement) {
     });
 }
 
+let additions = ADDITIONS_INITIAL_VALUE;
+displayProducts(PRODUCT_INITIAL_VALUE);
+const finalProductList = [];
+let totalPrice = 0;
+
 navPanel.addEventListener("click", (event) => {
     const activeElement = document.getElementsByClassName("content__element__active")[0];
     activeElement.classList.remove("content__element__active");
@@ -162,19 +162,6 @@ navPanel.addEventListener("click", (event) => {
 });
 
 //ниже функционал переключения между вкладками
-const tabsAdditives = {
-    sizes: () => displayAdditive(data.sizes, additions.price, "sizes"),
-    breads: () => displayAdditive(data.breads, additions.price, "breads"),
-    vegetables: () => displayAdditive(data.vegetables, additions.price, "vegetables"),
-    sauces: () => displayAdditive(data.sauces, additions.price, "sauces"),
-    fillings: () => displayAdditive(data.fillings, additions.price, "fillings"),
-    ready: displayReady,
-};
-
-function displayProductParameters(clickedAdditives) {
-    tabsAdditives[clickedAdditives]();
-}
-
 function displayAdditive(elements, oldPrice, activePosition) {
     const totalPrice = document.createElement("div");
     const elementsContainer = document.createElement("div");
@@ -222,52 +209,6 @@ function displayAdditive(elements, oldPrice, activePosition) {
     }
     activePosition === "sizes" && dialogContent.append(totalPrice);
 }
-
-nextDialogButton.addEventListener("click", () => {
-    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
-    const newActiveElement = activeElement.nextSibling.nextSibling;
-    activeElement.classList.remove("dialog__element__active");
-    newActiveElement.classList.add("dialog__element__active");
-
-    if (newActiveElement.id === "ready") {
-        nextDialogButton.classList.add("dialog__button__none");
-    } else if (newActiveElement.id === "breads") {
-        previousDialogButton.classList.remove("dialog__button__none");
-    }
-    displayProductParameters(newActiveElement.id);
-});
-
-previousDialogButton.addEventListener("click", () => {
-    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
-    const newActiveElement = activeElement.previousSibling.previousSibling;
-    activeElement.classList.remove("dialog__element__active");
-    newActiveElement.classList.add("dialog__element__active");
-
-    if (newActiveElement.id === "sizes") {
-        previousDialogButton.classList.add("dialog__button__none");
-    } else if (newActiveElement.id === "fillings") {
-        nextDialogButton.classList.remove("dialog__button__none");
-    }
-    displayProductParameters(newActiveElement.id);
-});
-
-dialogPanel.addEventListener("click", (event) => {
-    const activeNaigationElement = event.target;
-    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
-    activeElement.classList.remove("dialog__element__active");
-    activeNaigationElement.classList.add("dialog__element__active");
-    if (activeNaigationElement.id === "ready") {
-        nextDialogButton.classList.add("dialog__button__none");
-        previousDialogButton.classList.remove("dialog__button__none");
-    } else if (activeNaigationElement.id === "sizes") {
-        previousDialogButton.classList.add("dialog__button__none");
-        nextDialogButton.classList.remove("dialog__button__none");
-    } else {
-        nextDialogButton.classList.remove("dialog__button__none");
-        previousDialogButton.classList.remove("dialog__button__none");
-    }
-    displayProductParameters(activeNaigationElement.id);
-});
 
 function displayReady() {
     while (dialogContent.firstChild) {
@@ -380,6 +321,65 @@ function displayReady() {
     dialogContainer.append(imageContainer, dialogInformationContainer);
     dialogContent.append(dialogContainer, counter);
 }
+
+const tabsAdditives = {
+    sizes: () => displayAdditive(data.sizes, additions.price, "sizes"),
+    breads: () => displayAdditive(data.breads, additions.price, "breads"),
+    vegetables: () => displayAdditive(data.vegetables, additions.price, "vegetables"),
+    sauces: () => displayAdditive(data.sauces, additions.price, "sauces"),
+    fillings: () => displayAdditive(data.fillings, additions.price, "fillings"),
+    ready: displayReady,
+};
+
+function displayProductParameters(clickedAdditives) {
+    tabsAdditives[clickedAdditives]();
+}
+
+nextDialogButton.addEventListener("click", () => {
+    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
+    const newActiveElement = activeElement.nextSibling.nextSibling;
+    activeElement.classList.remove("dialog__element__active");
+    newActiveElement.classList.add("dialog__element__active");
+
+    if (newActiveElement.id === "ready") {
+        nextDialogButton.classList.add("dialog__button__none");
+    } else if (newActiveElement.id === "breads") {
+        previousDialogButton.classList.remove("dialog__button__none");
+    }
+    displayProductParameters(newActiveElement.id);
+});
+
+previousDialogButton.addEventListener("click", () => {
+    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
+    const newActiveElement = activeElement.previousSibling.previousSibling;
+    activeElement.classList.remove("dialog__element__active");
+    newActiveElement.classList.add("dialog__element__active");
+
+    if (newActiveElement.id === "sizes") {
+        previousDialogButton.classList.add("dialog__button__none");
+    } else if (newActiveElement.id === "fillings") {
+        nextDialogButton.classList.remove("dialog__button__none");
+    }
+    displayProductParameters(newActiveElement.id);
+});
+
+dialogPanel.addEventListener("click", (event) => {
+    const activeNaigationElement = event.target;
+    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
+    activeElement.classList.remove("dialog__element__active");
+    activeNaigationElement.classList.add("dialog__element__active");
+    if (activeNaigationElement.id === "ready") {
+        nextDialogButton.classList.add("dialog__button__none");
+        previousDialogButton.classList.remove("dialog__button__none");
+    } else if (activeNaigationElement.id === "sizes") {
+        previousDialogButton.classList.add("dialog__button__none");
+        nextDialogButton.classList.remove("dialog__button__none");
+    } else {
+        nextDialogButton.classList.remove("dialog__button__none");
+        previousDialogButton.classList.remove("dialog__button__none");
+    }
+    displayProductParameters(activeNaigationElement.id);
+});
 
 function displaySelectedItems() {
     const basketContainer = document.getElementsByClassName("basket__elements")[0];
