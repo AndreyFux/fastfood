@@ -196,7 +196,8 @@ body {
     background-color: #eae8e7;
 }
 
-.counter__image:hover {
+.counter__image:hover,
+.dialog__exit:hover {
     cursor: pointer;
 }
 

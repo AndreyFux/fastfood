@@ -2,11 +2,11 @@ import data from "./data.json" assert { type: "json" };
 
 const PRODUCT_INITIAL_VALUE = "sandwiches";
 const ADDITIONS_INITIAL_VALUE = {
-    sizes: null,
-    breads: "Нет",
-    vegetables: "Нет",
-    sauces: "Нет",
-    fillings: "Нет",
+    sizes: "Не указан",
+    breads: "Не указан",
+    vegetables: "Не указан",
+    sauces: "Не указан",
+    fillings: "Не указан",
     price: 0,
     name: "",
     count: 1,
@@ -178,6 +178,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
         let newPrice = 0;
 
         element.className = "dialog__size";
+        element.id = elements[key].name;
         size.className = "dialog__value";
         size.innerHTML = elements[key].name;
         price.innerHTML = `Цена: ${additivePrice}руб`;
@@ -208,6 +209,71 @@ function displayAdditive(elements, oldPrice, activePosition) {
         totalPrice.className = "itog__prise prise";
     }
     activePosition === "sizes" && dialogContent.append(totalPrice);
+
+    if (additions[activePosition] !== "Не указан") {
+        const activeElement = document.getElementById(additions[activePosition]);
+        activeElement.classList.add("dialog__additive__active");
+    }
+}
+
+function displayFillings(elements, oldPrice, activePosition) {
+    const elementsContainer = document.createElement("div");
+    while (dialogContent.firstChild) {
+        dialogContent.removeChild(dialogContent.firstChild);
+    }
+    let newPrice = 0;
+    const fillings =
+        typeof additions[activePosition] === "string" ? [] : additions[activePosition];
+    elementsContainer.className = "dialog__elements";
+    for (const key in elements) {
+        const element = document.createElement("div");
+        const image = document.createElement("img");
+        const size = document.createElement("div");
+        const price = document.createElement("div");
+
+        const additivePrice = elements[key].price;
+
+        element.className = "dialog__size";
+        size.className = "dialog__value";
+
+        element.id = elements[key].name;
+        size.innerHTML = elements[key].name;
+
+        price.innerHTML = `Цена: ${additivePrice}руб`;
+        price.className = "dialog__prise prise";
+
+        image.src = `./ПРИЛОЖЕНИЯ${elements[key].image}`;
+        image.alt = "image";
+        image.className = "image dialog__image";
+        element.addEventListener("click", (event) => {
+            const activeElement = event.currentTarget;
+            if (activeElement.classList.contains("dialog__additive__active")) {
+                //убираем активность и уменьшаем цену и убираем элемент из массива
+                fillings.forEach(function (item, index) {
+                    if (item === activeElement.id) fillings.splice(index, 1);
+                });
+                activeElement.classList.remove("dialog__additive__active");
+                newPrice -= additivePrice + oldPrice;
+            } else if (fillings.length < 3) {
+                //добавляем активность и добавляем к цене и добавляем элемент в массив
+                fillings.push(activeElement.id);
+                activeElement.classList.add("dialog__additive__active");
+                newPrice += additivePrice + oldPrice;
+            }
+            return (additions[activePosition] = fillings), (additions.price = newPrice);
+        });
+
+        element.append(image, size, price);
+        elementsContainer.append(element);
+        dialogContent.append(elementsContainer);
+    }
+
+    if (additions[activePosition] !== "Не указан") {
+        additions[activePosition].forEach(function (item) {
+            const activeElement = document.getElementById(item);
+            activeElement.classList.add("dialog__additive__active");
+        });
+    }
 }
 
 function displayReady() {
@@ -327,7 +393,7 @@ const tabsAdditives = {
     breads: () => displayAdditive(data.breads, additions.price, "breads"),
     vegetables: () => displayAdditive(data.vegetables, additions.price, "vegetables"),
     sauces: () => displayAdditive(data.sauces, additions.price, "sauces"),
-    fillings: () => displayAdditive(data.fillings, additions.price, "fillings"),
+    fillings: () => displayFillings(data.fillings, additions.price, "fillings"),
     ready: displayReady,
 };
 
