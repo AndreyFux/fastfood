@@ -327,7 +327,7 @@ body {
 
 .basket__prise {
     padding: 15px 0 20px;
-    /* margin: 0 10px; */
+    margin: 0 10px;
     border-top: 2px solid var(--main-bg-color);
     font-weight: bold;
 }

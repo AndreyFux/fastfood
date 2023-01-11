@@ -73,30 +73,53 @@ function displayProducts(clickedElement) {
             counter_container.className = "counter__container";
 
             decrease.className = "counter__decrease";
-            decrease.addEventListener("click", () => {
-                count > 1 && count--;
-                input.value = count;
-            });
+            imageMinus.setAttribute("data-action", "decrease");
 
             increase.className = "counter__increase";
-            increase.addEventListener("click", () => {
-                count++;
-                input.value = count;
-            });
+            imagePlus.setAttribute("data-action", "increase");
 
             input.className = "counter__input";
+            input.setAttribute("data-action", "input");
             input.type = "text";
             input.value = count;
-            input.addEventListener("input", () => {
-                count = input.value;
-            });
 
-            imagePlus.src = `./images/minus.svg`;
-            imagePlus.alt = "counter__image";
-            imagePlus.className = "counter__image";
-            imageMinus.src = `./images/plus.svg`;
+            class Counter {
+                constructor(elem) {
+                    this._elem = elem;
+                    elem.onclick = this.onChange.bind(this);
+                    elem.oninput = this.onChange.bind(this);
+                }
+
+                decrease() {
+                    count > 1 && count--;
+                    input.value = count;
+                }
+
+                input() {
+                    count = input.value;
+                }
+
+                increase() {
+                    count++;
+                    input.value = count;
+                }
+
+                onChange(event) {
+                    const action = event.target.dataset.action;
+                    if (action) {
+                        this[action]();
+                    }
+                }
+            }
+
+            new Counter(counter_container);
+
+            imageMinus.src = `./images/minus.svg`;
             imageMinus.alt = "counter__image";
             imageMinus.className = "counter__image";
+            imagePlus.src = `./images/plus.svg`;
+            imagePlus.alt = "counter__image";
+            imagePlus.className = "counter__image";
 
             basketButton.className = "button item__button";
             basketButton.innerText = "В КОРЗИНУ";
@@ -104,7 +127,6 @@ function displayProducts(clickedElement) {
             const priseString = document.getElementsByClassName("basket__prise")[0];
 
             basketButton.addEventListener("click", () => {
-                console.log(finalProductList);
                 if (count > 0) {
                     if (item.category === PRODUCT_INITIAL_VALUE) {
                         //при нажатии на  sandwitch открываем модалку на начальном элементе
@@ -141,7 +163,7 @@ function displayProducts(clickedElement) {
 
             decrease.append(imagePlus);
             increase.append(imageMinus);
-            counter_container.append(decrease, input, increase);
+            counter_container.append(increase, input, decrease);
             counter.append(amount, counter_container);
             element.append(logo, image, name, additives, prise, counter, basketButton);
             productContentBlock.append(element);
@@ -259,7 +281,7 @@ function displayFillings(elements, oldPrice, activePosition) {
                 activeElement.classList.remove("dialog__additive__active");
                 newPrice -= additivePrice + oldPrice;
             } else if (fillings.length < 3) {
-                //добавляем активность и добавляем к цене и добавляем элемент в массив
+                //добавляем активность, добавляем к цене и добавляем элемент в массив
                 fillings.push(activeElement.id);
                 activeElement.classList.add("dialog__additive__active");
                 newPrice += additivePrice + oldPrice;
@@ -478,11 +500,8 @@ function displaySelectedItems() {
         container.id = item.id;
 
         container.addEventListener("click", function () {
-            console.log(finalProductList);
-            // console.log(finalProductList.splice(basketContainer.id, 1));
             finalProductList.splice(basketContainer.id, 1);
             basketContainer.removeChild(container);
-            // console.log({ finalProductList, basketContainer });
         });
 
         exitButton.className = "basket__exit";
