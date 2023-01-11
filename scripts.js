@@ -155,7 +155,6 @@ function displayProducts(clickedElement) {
                         });
                         displaySelectedItems();
                         totalPrice += count * item.price;
-                        // additions.price = count * item.price;   зачем???
                         priseString.innerHTML = `Итого: ${totalPrice} руб`;
                     }
                 }
@@ -180,10 +179,7 @@ navPanel.addEventListener("click", (event) => {
     const activeElement = document.getElementsByClassName("content__element__active")[0];
     activeElement.classList.remove("content__element__active");
     event.target.classList.add("content__element__active");
-
-    while (productContentBlock.firstChild) {
-        productContentBlock.removeChild(productContentBlock.firstChild);
-    }
+    removeElements(productContentBlock);
     displayProducts(event.target.id);
 });
 
@@ -191,9 +187,7 @@ navPanel.addEventListener("click", (event) => {
 function displayAdditive(elements, oldPrice, activePosition) {
     const totalPrice = document.createElement("div");
     const elementsContainer = document.createElement("div");
-    while (dialogContent.firstChild) {
-        dialogContent.removeChild(dialogContent.firstChild);
-    }
+    removeElements(dialogContent);
     elementsContainer.className = "dialog__elements";
     for (const key in elements) {
         const element = document.createElement("div");
@@ -244,9 +238,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
 
 function displayFillings(elements, oldPrice, activePosition) {
     const elementsContainer = document.createElement("div");
-    while (dialogContent.firstChild) {
-        dialogContent.removeChild(dialogContent.firstChild);
-    }
+    removeElements(dialogContent);
     let newPrice = 0;
     const fillings =
         typeof additions[activePosition] === "string" ? [] : additions[activePosition];
@@ -303,9 +295,7 @@ function displayFillings(elements, oldPrice, activePosition) {
 }
 
 function displayReady() {
-    while (dialogContent.firstChild) {
-        dialogContent.removeChild(dialogContent.firstChild);
-    }
+    removeElements(dialogContent);
     let count = additions.count;
 
     const price = document.createElement("div");
@@ -481,9 +471,8 @@ dialogPanel.addEventListener("click", (event) => {
 
 function displaySelectedItems() {
     const basketContainer = document.getElementsByClassName("basket__elements")[0];
-    while (basketContainer.firstChild) {
-        basketContainer.removeChild(basketContainer.firstChild);
-    }
+    removeElements(basketContainer);
+
     finalProductList.forEach((item) => {
         const name = document.createElement("div");
         const count = document.createElement("div");
@@ -517,10 +506,14 @@ function displaySelectedItems() {
     });
 }
 
+function removeElements(element) {
+    while (element.firstChild) {
+        element.removeChild(element.firstChild);
+    }
+}
+
 document.querySelector("#none").addEventListener("click", function () {
     dialog.close();
     additions = ADDITIONS_INITIAL_VALUE;
-    while (dialogContent.firstChild) {
-        dialogContent.removeChild(dialogContent.firstChild);
-    }
+    removeElements(dialogContent);
 });
