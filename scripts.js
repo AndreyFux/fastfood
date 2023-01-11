@@ -104,6 +104,7 @@ function displayProducts(clickedElement) {
             const priseString = document.getElementsByClassName("basket__prise")[0];
 
             basketButton.addEventListener("click", () => {
+                console.log(finalProductList);
                 if (count > 0) {
                     if (item.category === PRODUCT_INITIAL_VALUE) {
                         //при нажатии на  sandwitch открываем модалку на начальном элементе
@@ -126,6 +127,9 @@ function displayProducts(clickedElement) {
                         finalProductList.push({
                             name: item.name,
                             count: count,
+                            id: finalProductList.length
+                                ? finalProductList[finalProductList.length - 1].id + 1
+                                : 0,
                         });
                         displaySelectedItems();
                         totalPrice += count * item.price;
@@ -248,7 +252,7 @@ function displayFillings(elements, oldPrice, activePosition) {
         element.addEventListener("click", (event) => {
             const activeElement = event.currentTarget;
             if (activeElement.classList.contains("dialog__additive__active")) {
-                //убираем активность и уменьшаем цену и убираем элемент из массива
+                //убираем активность, уменьшаем цену и убираем элемент из массива
                 fillings.forEach(function (item, index) {
                     if (item === activeElement.id) fillings.splice(index, 1);
                 });
@@ -364,7 +368,13 @@ function displayReady() {
     basketButton.addEventListener("click", () => {
         if (count > 0) {
             dialog.close();
-            finalProductList.push({ name: additions.name, count: count });
+            finalProductList.push({
+                name: additions.name,
+                count: count,
+                id: finalProductList.length
+                    ? finalProductList[finalProductList.length - 1].id + 1
+                    : 0,
+            });
             displaySelectedItems();
             totalPrice += count * additions.price;
             priseString.innerHTML = `Итого: ${totalPrice} руб`;
@@ -456,13 +466,35 @@ function displaySelectedItems() {
         const name = document.createElement("div");
         const count = document.createElement("div");
         const element = document.createElement("div");
+        const container = document.createElement("div");
+        const exitButton = document.createElement("div");
+        const image = document.createElement("img");
 
         element.className = "basket__element";
         name.innerText = item.name;
         count.innerText = item.count;
 
+        container.className = "basket__container";
+        container.id = item.id;
+
+        container.addEventListener("click", function () {
+            console.log(finalProductList);
+            // console.log(finalProductList.splice(basketContainer.id, 1));
+            finalProductList.splice(basketContainer.id, 1);
+            basketContainer.removeChild(container);
+            // console.log({ finalProductList, basketContainer });
+        });
+
+        exitButton.className = "basket__exit";
+
+        image.src = `./images/exit.png`;
+        image.alt = "image";
+        image.className = "image__basket";
+
+        exitButton.append(image);
         element.append(name, count);
-        basketContainer.append(element);
+        container.append(exitButton, element);
+        basketContainer.append(container);
     });
 }
 
