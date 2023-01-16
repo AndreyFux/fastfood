@@ -136,64 +136,6 @@ function displayProducts(clickedElement) {
                     input.value++;
                 }
             };
-            // productContentBlock.addEventListener("input", handleCounterInput);
-
-            function handleCounterClick(event) {
-                const element = event.target.closest(".content__item");
-                let input = element.getElementsByClassName("counter__input")[0];
-                const action = event.target.dataset.action;
-                console.log(element, input);
-                if (action === "decrease") {
-                    count > 1 && count--;
-                    input.value = count;
-                } else if (action === "increase") {
-                    count++;
-                    input.value = count;
-                }
-            }
-
-            // function handleCounterInput(event) {
-            //     const element = event.target.closest(".content__item");
-            //     let input = element.getElementsByClassName("counter__input")[0];
-            //     const action = event.target.dataset.action;
-            //     if (action === "input") {
-            //         count = input.value;
-            //     }
-            // }
-
-            // class Counter {
-            //     constructor(elem) {
-            //         this._elem = elem;
-            //         elem.onclick = this.onChange.bind(this);
-            //         elem.oninput = this.onChange.bind(this);
-            //     }
-
-            //     decrease() {
-            //         count > 1 && count--;
-            //         input.value = count;
-            //         console.log(count, input.value);
-            //     }
-
-            //     input() {
-            //         count = input.value;
-            //         console.log(count, input.value);
-            //     }
-
-            //     increase() {
-            //         count++;
-            //         input.value = count;
-            //         console.log(count, input.value);
-            //     }
-
-            //     onChange(event) {
-            //         const action = event.target.dataset.action;
-            //         if (action) {
-            //             this[action]();
-            //         }
-            //     }
-            // }
-
-            // new Counter(productContentBlock);
         }
     });
 }
