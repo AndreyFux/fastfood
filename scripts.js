@@ -36,49 +36,53 @@ function displayProducts(clickedElement) {
         if (item.category === clickedElement) {
             const renderProductLogo = (productType) => {
                 if (productType === "pizza") return "";
-                return `
+                return /*html*/ `
                     <img src=./ПРИЛОЖЕНИЯ/i/markets/${item.market}.png alt=item__logo
                                 class=item__logo />
                 `;
             };
 
-            const element = `<div class="item content__item">
-                            ${renderProductLogo(clickedElement)} <img src=./ПРИЛОЖЕНИЯ/${
-                item.image
-            } alt="image"
-                            class="image"/>
-                            <div class="item__name">${item.name}</div>
-                            <a class="item__additives" href="#">${item.description}</a>
-                            <div class="prise item__prise">Цена: ${item.price}руб</div>
-                            <div class="counter">
-                                <div>Количество:</div>
-                                <div class="counter__container">
-                                    <button class="counter__increase">
-                                        <img
-                                            data-action="decrease"
-                                            class="counter__image"
-                                            alt="counter__image"
-                                            src="./images/minus.svg"
-                                        />
-                                    </button>
-                                    <input
-                                        type="text"
-                                        class="counter__input"
-                                        value="${count}"
-                                        data-action="input"
-                                    />
-                                    <button class="counter__decrease">
-                                        <img
-                                            data-action="increase"
-                                            class="counter__image"
-                                            alt="counter__image"
-                                            src="./images/plus.svg"
-                                        />
-                                    </button>
-                                </div>
-                            </div>
-                            <button class="button item__button">В КОРЗИНУ</button>
-                        </div>`;
+            const element = /*html*/ `<div class="item content__item">
+                                        ${renderProductLogo(
+                                            clickedElement
+                                        )} <img src=./ПРИЛОЖЕНИЯ/${item.image} alt="image"
+                                        class="image"/>
+                                        <div class="item__name">${item.name}</div>
+                                        <a class="item__additives" href="#">${
+                                            item.description
+                                        }</a>
+                                        <div class="prise item__prise">Цена: ${
+                                            item.price
+                                        }руб</div>
+                                        <div class="counter">
+                                            <div>Количество:</div>
+                                            <div class="counter__container">
+                                                <button class="counter__increase">
+                                                    <img
+                                                        data-action="decrease"
+                                                        class="counter__image"
+                                                        alt="counter__image"
+                                                        src="./images/minus.svg"
+                                                    />
+                                                </button>
+                                                <input
+                                                    type="text"
+                                                    class="counter__input"
+                                                    value="${count}"
+                                                    data-action="input"
+                                                />
+                                                <button class="counter__decrease">
+                                                    <img
+                                                        data-action="increase"
+                                                        class="counter__image"
+                                                        alt="counter__image"
+                                                        src="./images/plus.svg"
+                                                    />
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button class="button item__button">В КОРЗИНУ</button>
+                                    </div>`;
             productContentBlock.insertAdjacentHTML("beforeend", element);
 
             const priseString = document.getElementsByClassName("basket__prise")[0];
@@ -178,11 +182,11 @@ function displayAdditive(elements, oldPrice, activePosition) {
 
     for (const key in elements) {
         const additivePrice = elements[key].price;
-        const additiveElement = `<div class="dialog__size" id="${elements[key].name}">
-                        <img src=./ПРИЛОЖЕНИЯ${elements[key].image} alt="image" class="image dialog__image">
-                        <div class="dialog__value">${elements[key].name}</div>
-                        <div class="dialog__prise prise">Цена: ${additivePrice}руб</div>
-                    </div>`;
+        const additiveElement = /*html*/ `<div class="dialog__size" id="${elements[key].name}">
+                                            <img src=./ПРИЛОЖЕНИЯ${elements[key].image} alt="image" class="image dialog__image">
+                                            <div class="dialog__value">${elements[key].name}</div>
+                                            <div class="dialog__prise prise">Цена: ${additivePrice}руб</div>
+                                        </div>`;
         elementsContainer.insertAdjacentHTML("beforeend", additiveElement);
         let newPrice = 0;
 
@@ -206,7 +210,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
     activePosition === "sizes" &&
         dialogContent.insertAdjacentHTML(
             "beforeend",
-            `<div class="itog__prise prise">Цена: ${oldPrice}руб</div>`
+            /*html*/ `<div class="itog__prise prise">Цена: ${oldPrice}руб</div>`
         );
 
     if (additions[activePosition] !== "Не указан") {
@@ -226,11 +230,11 @@ function displayFillings(elements, activePosition) {
     for (const key in elements) {
         const additivePrice = elements[key].price;
 
-        const fillingsElement = `<div class="dialog__size" id="${elements[key].name}">
-                        <img src=./ПРИЛОЖЕНИЯ${elements[key].image} alt="image" class="image dialog__image">
-                        <div class="dialog__value">${elements[key].name}</div>
-                        <div class="dialog__prise prise">Цена: ${additivePrice}руб</div>
-                    </div>`;
+        const fillingsElement = /*html*/ `<div class="dialog__size" id="${elements[key].name}">
+                                            <img src=./ПРИЛОЖЕНИЯ${elements[key].image} alt="image" class="image dialog__image">
+                                            <div class="dialog__value">${elements[key].name}</div>
+                                            <div class="dialog__prise prise">Цена: ${additivePrice}руб</div>
+                                        </div>`;
         elementsContainer.insertAdjacentHTML("beforeend", fillingsElement);
 
         const element = document.getElementById(elements[key].name);
@@ -266,43 +270,53 @@ function displayReady() {
     removeElements(dialogContent);
     let count = additions.count;
 
-    const readyElement = `<div class="result__container">
-                    <div class="result__img-container">
-                        <img src=./ПРИЛОЖЕНИЯ/i/result_sandwich.jpg alt="image"
-                        class="image result__image">
-                    </div>
-                    <div class="result__inf-container">
-                        <div class="result__header">Ваш сендвич готов!</div>
-                        <div class="result__information">
-                            <div class="result__text">Размер: ${additions.sizes}</div>
-                            <div class="result__text">Хлеб: ${additions.breads}</div>
-                            <div class="result__text">Овощи: ${additions.vegetables}</div>
-                            <div class="result__text">Соусы: ${additions.sauces}</div>
-                            <div class="result__text">Начинка: ${additions.fillings}</div>
-                        </div>
-                        <div class="result__name">${additions.name}</div>
-                    </div>
-                </div>
-                <div class="counter result__count-container">
-                    <div>Количество</div>
-                    <div class="counter__container result__counter">
-                        <button class="counter__decrease">
-                            <img src=./images/minus.svg alt="counter__image"
-                            class="counter__image">
-                        </button>
-                        <input type="text" value="${count}" class="counter__input" />
-                        <button class="counter__increase">
-                            <img src=./images/plus.svg alt="counter__image"
-                            class="counter__image">
-                        </button>
-                    </div>
-                    <div class="result__foot-container">
-                        <div class="result__prise prise">
-                            Цена: ${count * additions.price}руб.
-                        </div>
-                        <button class="button result__button">В КОРЗИНУ</button>
-                    </div>
-                </div>`;
+    const readyElement = /*html*/ `<div class="result__container">
+                                    <div class="result__img-container">
+                                        <img src=./ПРИЛОЖЕНИЯ/i/result_sandwich.jpg alt="image"
+                                        class="image result__image">
+                                    </div>
+                                    <div class="result__inf-container">
+                                        <div class="result__header">Ваш сендвич готов!</div>
+                                        <div class="result__information">
+                                            <div class="result__text">Размер: ${
+                                                additions.sizes
+                                            }</div>
+                                            <div class="result__text">Хлеб: ${
+                                                additions.breads
+                                            }</div>
+                                            <div class="result__text">Овощи: ${
+                                                additions.vegetables
+                                            }</div>
+                                            <div class="result__text">Соусы: ${
+                                                additions.sauces
+                                            }</div>
+                                            <div class="result__text">Начинка: ${
+                                                additions.fillings
+                                            }</div>
+                                        </div>
+                                        <div class="result__name">${additions.name}</div>
+                                    </div>
+                                </div>
+                                <div class="counter result__count-container">
+                                    <div>Количество</div>
+                                    <div class="counter__container result__counter">
+                                        <button class="counter__decrease">
+                                            <img src=./images/minus.svg alt="counter__image"
+                                            class="counter__image">
+                                        </button>
+                                        <input type="text" value="${count}" class="counter__input" />
+                                        <button class="counter__increase">
+                                            <img src=./images/plus.svg alt="counter__image"
+                                            class="counter__image">
+                                        </button>
+                                    </div>
+                                    <div class="result__foot-container">
+                                        <div class="result__prise prise">
+                                            Цена: ${count * additions.price}руб.
+                                        </div>
+                                        <button class="button result__button">В КОРЗИНУ</button>
+                                    </div>
+                                </div>`;
     dialogContent.insertAdjacentHTML("beforeend", readyElement);
     const resultContainer = document.getElementsByClassName("result__count-container")[0];
     const decrease = resultContainer.getElementsByClassName("counter__decrease")[0];
@@ -421,15 +435,15 @@ function displaySelectedItems() {
     removeElements(basketContainer);
 
     finalProductList.forEach((item) => {
-        const basketElement = `<div class="basket__container" id="${item.id}">
-                            <div class="basket__exit">
-                                <img src=./images/exit.png alt="image" class="image__basket">
-                            </div>
-                            <div class="basket__element">
-                                <div>${item.name}</div>
-                              <div>${item.count}</div>
-                            </div>
-                        </div>`;
+        const basketElement = /*html*/ `<div class="basket__container" id="${item.id}">
+                                            <div class="basket__exit">
+                                                <img src=./images/exit.png alt="image" class="image__basket">
+                                            </div>
+                                            <div class="basket__element">
+                                                <div>${item.name}</div>
+                                            <div>${item.count}</div>
+                                            </div>
+                                        </div>`;
         basketContainer.insertAdjacentHTML("beforeend", basketElement);
 
         const container = document.getElementById(item.id);
