@@ -32,7 +32,6 @@ const previousDialogButton = document.getElementsByClassName(
 
 function displayProducts(clickedElement) {
     data.menu.forEach((item) => {
-        let count = 1;
         if (item.category === clickedElement) {
             const renderProductLogo = (productType) => {
                 if (productType === "pizza") return "";
@@ -68,7 +67,7 @@ function displayProducts(clickedElement) {
                                                 <input
                                                     type="text"
                                                     class="counter__input"
-                                                    value="${count}"
+                                                    value="${1}"
                                                     data-action="input"
                                                 />
                                                 <button class="counter__decrease">
@@ -90,76 +89,111 @@ function displayProducts(clickedElement) {
             const activeElement = elements[elements.length - 1];
             const BasketButton = activeElement.getElementsByClassName("item__button")[0];
 
-            BasketButton.addEventListener("click", () => {
-                if (count > 0) {
-                    if (item.category === PRODUCT_INITIAL_VALUE) {
-                        //при нажатии на  sandwitch открываем модалку на начальном элементе
-                        const activeElement = document.getElementsByClassName(
-                            "dialog__element__active"
-                        )[0];
+            BasketButton.addEventListener("click", (event) => {
+                const element = event.target.closest(".content__item");
+                let input = element.getElementsByClassName("counter__input")[0];
 
-                        if (activeElement.id !== "sizes") {
-                            const newActiveElement = document.getElementById("sizes");
-                            activeElement.classList.remove("dialog__element__active");
-                            newActiveElement.classList.add("dialog__element__active");
-                            previousDialogButton.classList.add("dialog__button__none");
-                        }
-                        dialog.showModal();
-                        displayAdditive(data.sizes, item.price, "sizes");
-                        additions.name = item.name;
-                        additions.count = count;
-                    } else {
-                        //при нажатии на  другие элементу просто добавляем в общий массив
-                        finalProductList.push({
-                            name: item.name,
-                            count: count,
-                            id: finalProductList.length
-                                ? finalProductList[finalProductList.length - 1].id + 1
-                                : 0,
-                            prise: count * item.price,
-                        });
-                        displaySelectedItems();
+                if (item.category === PRODUCT_INITIAL_VALUE) {
+                    //при нажатии на  sandwitch открываем модалку на начальном элементе
+                    const activeElement = document.getElementsByClassName(
+                        "dialog__element__active"
+                    )[0];
 
-                        totalPrice += count * item.price;
-                        priseString.innerHTML = `Итого: ${totalPrice} руб`;
+                    if (activeElement.id !== "sizes") {
+                        const newActiveElement = document.getElementById("sizes");
+                        activeElement.classList.remove("dialog__element__active");
+                        newActiveElement.classList.add("dialog__element__active");
+                        previousDialogButton.classList.add("dialog__button__none");
                     }
+                    dialog.showModal();
+                    displayAdditive(data.sizes, item.price, "sizes");
+                    additions.name = item.name;
+                    additions.count = input.value;
+                } else {
+                    //при нажатии на  другие элементу просто добавляем в общий массив
+                    finalProductList.push({
+                        name: item.name,
+                        count: input.value,
+                        id: finalProductList.length
+                            ? finalProductList[finalProductList.length - 1].id + 1
+                            : 0,
+                        prise: input.value * item.price,
+                    });
+                    displaySelectedItems();
+
+                    totalPrice += input.value * item.price;
+                    priseString.innerHTML = `Итого: ${totalPrice} руб`;
                 }
             });
 
-            const counter_container =
-                activeElement.getElementsByClassName("counter__container")[0];
-            const input = activeElement.querySelector(".counter__input");
-
-            class Counter {
-                constructor(elem) {
-                    this._elem = elem;
-                    elem.onclick = this.onChange.bind(this);
-                    elem.oninput = this.onChange.bind(this);
+            productContentBlock.onclick = function (event) {
+                const element = event.target.closest(".content__item");
+                let input = element.getElementsByClassName("counter__input")[0];
+                const action = event.target.dataset.action;
+                if (action === "decrease") {
+                    input.value > 1 && input.value--;
+                } else if (action === "increase") {
+                    input.value++;
                 }
+            };
+            // productContentBlock.addEventListener("input", handleCounterInput);
 
-                decrease() {
+            function handleCounterClick(event) {
+                const element = event.target.closest(".content__item");
+                let input = element.getElementsByClassName("counter__input")[0];
+                const action = event.target.dataset.action;
+                console.log(element, input);
+                if (action === "decrease") {
                     count > 1 && count--;
                     input.value = count;
-                }
-
-                input() {
-                    count = input.value;
-                }
-
-                increase() {
+                } else if (action === "increase") {
                     count++;
                     input.value = count;
                 }
-
-                onChange(event) {
-                    const action = event.target.dataset.action;
-                    if (action) {
-                        this[action]();
-                    }
-                }
             }
 
-            new Counter(counter_container);
+            // function handleCounterInput(event) {
+            //     const element = event.target.closest(".content__item");
+            //     let input = element.getElementsByClassName("counter__input")[0];
+            //     const action = event.target.dataset.action;
+            //     if (action === "input") {
+            //         count = input.value;
+            //     }
+            // }
+
+            // class Counter {
+            //     constructor(elem) {
+            //         this._elem = elem;
+            //         elem.onclick = this.onChange.bind(this);
+            //         elem.oninput = this.onChange.bind(this);
+            //     }
+
+            //     decrease() {
+            //         count > 1 && count--;
+            //         input.value = count;
+            //         console.log(count, input.value);
+            //     }
+
+            //     input() {
+            //         count = input.value;
+            //         console.log(count, input.value);
+            //     }
+
+            //     increase() {
+            //         count++;
+            //         input.value = count;
+            //         console.log(count, input.value);
+            //     }
+
+            //     onChange(event) {
+            //         const action = event.target.dataset.action;
+            //         if (action) {
+            //             this[action]();
+            //         }
+            //     }
+            // }
+
+            // new Counter(productContentBlock);
         }
     });
 }
