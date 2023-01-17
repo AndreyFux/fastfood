@@ -40,13 +40,13 @@
 }
 
 .navigation__element {
-    text-align: center;
-    background-color: white;
     padding: 15px;
+    text-align: center;
     text-decoration: none;
-    color: black;
     font-weight: bold;
     list-style-type: none;
+    background-color: white;
+    color: black;
 }
 
 .navigation__element:first-child {
@@ -103,16 +103,15 @@
 }
 
 .item__name {
-    text-align: center;
+    width: 234px;
+    overflow: hidden;
     margin: 11px;
+    text-align: center;
     text-decoration: none;
     font-size: 1.1rem;
     color: black;
     font-weight: bold;
     white-space: nowrap;
-    white-space: nowrap;
-    width: 234px;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -132,9 +131,9 @@
 
 .prise {
     text-decoration: none;
-    color: #d96f51;
     font-weight: bold;
     font-size: 1.4rem;
+    color: #d96f51;
 }
 
 .button {
@@ -173,6 +172,7 @@ body {
     height: 24px;
     padding: 0px;
     border: none;
+
     border-radius: 50%;
 }
 
@@ -186,9 +186,9 @@ body {
 }
 
 .counter__image {
+    width: 24px;
     border-radius: 50%;
     background-color: white;
-    width: 24px;
 }
 
 .counter__image:hover,
@@ -202,10 +202,10 @@ body {
 }
 
 .counter__container {
+    width: 100px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100px;
 }
 
 .counter {
@@ -228,8 +228,8 @@ body {
     border-top: 2px solid var(--main-bg-color);
 }
 .content__basket {
-    margin-top: 40px;
     width: 90%;
+    margin-top: 40px;
 }
 
 .basket__exit {
@@ -272,8 +272,8 @@ body {
 }
 
 .basket__header {
-    padding: 15px;
     display: flex;
+    padding: 15px;
     border-radius: 5px 5px 0 0;
 }
 
@@ -290,10 +290,10 @@ body {
 }
 
 .basket__shadow-logo {
-    transform: matrix(0.9, 1.8, -1, 1, 26, 40);
-    background-color: #daa400;
     width: 30px;
     height: 35px;
+    transform: matrix(0.9, 1.8, -1, 1, 26, 40);
+    background-color: #daa400;
 }
 
 .basket__name {
@@ -308,8 +308,8 @@ body {
 
 .basket__text-container {
     display: flex;
-    padding: 15px 15px 10px;
     justify-content: space-around;
+    padding: 15px 15px 10px;
 }
 
 .basket__total {
@@ -326,8 +326,8 @@ body {
 }
 
 .basket__prise {
-    padding: 15px 0 20px;
     margin: 0 10px;
+    padding: 15px 0 20px;
     border-top: 2px solid var(--main-bg-color);
     font-weight: bold;
 }
@@ -355,16 +355,16 @@ body {
 }
 
 .dialog__title {
+    padding: 12px;
     font-size: 2.2rem;
     color: white;
-    padding: 12px;
 }
 
 .dialog__navigation {
+    width: 90%;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    width: 90%;
 }
 
 .dialog__element {
@@ -398,12 +398,12 @@ body {
 
 .dialog__size {
     width: 33%;
+    margin: 30px 0 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     border-radius: 7px;
-    margin: 30px 0 30px;
 }
 
 .switching-buttons__next-button,
@@ -426,10 +426,10 @@ body {
 }
 
 .dialog__value {
+    width: 70%;
     font-size: 1.5rem;
     padding: 0 0 20px;
     border-bottom: 1.5px solid black;
-    width: 70%;
     text-align: center;
 }
 
@@ -438,11 +438,11 @@ body {
 }
 
 .dialog__exit {
-    border: 0;
-    background-color: var(--main-bg-color);
-    font-size: 1.2rem;
     float: right;
+    border: 0;
+    font-size: 1.2rem;
     padding: 3px;
+    background-color: var(--main-bg-color);
 }
 
 .dialog__exit-image {
@@ -450,10 +450,10 @@ body {
 }
 
 .itog__prise {
-    background-color: white;
     padding: 30px;
     text-align: center;
     font-size: 1.6rem;
+    background-color: white;
 }
 
 .dialog__button__none {
@@ -493,10 +493,10 @@ body {
 }
 
 .result__information {
+    margin-right: 50px;
+    padding: 25px 0;
     border-top: 1px solid;
     border-bottom: 1px solid;
-    padding: 25px 0;
-    margin-right: 50px;
 }
 
 .result__name {
@@ -504,10 +504,10 @@ body {
 }
 
 .result__counter {
+    width: 100px;
     display: flex;
     justify-content: center;
     justify-content: space-between;
-    width: 100px;
 }
 
 .result__count-container {
