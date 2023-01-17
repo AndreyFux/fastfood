@@ -12,7 +12,8 @@ const ADDITIONS_INITIAL_VALUE = {
     count: 1,
 };
 
-let additions = ADDITIONS_INITIAL_VALUE;
+let additions = { ...ADDITIONS_INITIAL_VALUE };
+console.log(additions);
 
 const finalProductList = [];
 let totalPrice = 0;
@@ -89,44 +90,54 @@ function displayProducts(clickedElement) {
             const activeElement = elements[elements.length - 1];
             const BasketButton = activeElement.getElementsByClassName("item__button")[0];
 
-            BasketButton.addEventListener("click", (event) => {
+            BasketButton.addEventListener("click", handleBasketButtonClick);
+
+            function handleBasketButtonClick(event) {
                 const element = event.target.closest(".content__item");
                 let input = element.getElementsByClassName("counter__input")[0];
 
                 if (item.category === PRODUCT_INITIAL_VALUE) {
-                    //при нажатии на  sandwitch открываем модалку на начальном элементе
-                    const activeElement = document.getElementsByClassName(
-                        "dialog__element__active"
-                    )[0];
-
-                    if (activeElement.id !== "sizes") {
-                        const newActiveElement = document.getElementById("sizes");
-                        activeElement.classList.remove("dialog__element__active");
-                        newActiveElement.classList.add("dialog__element__active");
-                        previousDialogButton.classList.add("dialog__button__none");
-                    }
-                    dialog.showModal();
-                    displayAdditive(data.sizes, item.price, "sizes");
-                    additions.name = item.name;
-                    additions.count = input.value;
+                    OpenModal(input);
                 } else {
-                    //при нажатии на  другие элементу просто добавляем в общий массив
-                    finalProductList.push({
-                        name: item.name,
-                        count: input.value,
-                        id: finalProductList.length
-                            ? finalProductList[finalProductList.length - 1].id + 1
-                            : 0,
-                        prise: input.value * item.price,
-                    });
-                    displaySelectedItems();
-
-                    totalPrice += input.value * item.price;
-                    priseString.innerHTML = `Итого: ${totalPrice} руб`;
+                    AddElementInBasket(input);
                 }
-            });
+            }
 
-            productContentBlock.onclick = function (event) {
+            function OpenModal(input) {
+                const activeElement = document.getElementsByClassName(
+                    "dialog__element__active"
+                )[0];
+
+                if (activeElement.id !== "sizes") {
+                    const newActiveElement = document.getElementById("sizes");
+                    activeElement.classList.remove("dialog__element__active");
+                    newActiveElement.classList.add("dialog__element__active");
+                    previousDialogButton.classList.add("dialog__button__none");
+                }
+                dialog.showModal();
+                displayAdditive(data.sizes, item.price, "sizes");
+                additions.name = item.name;
+                additions.count = input.value;
+            }
+
+            function AddElementInBasket(input) {
+                finalProductList.push({
+                    name: item.name,
+                    count: input.value,
+                    id: finalProductList.length
+                        ? finalProductList[finalProductList.length - 1].id + 1
+                        : 0,
+                    prise: input.value * item.price,
+                });
+                displaySelectedItems();
+
+                totalPrice += input.value * item.price;
+                priseString.innerHTML = `Итого: ${totalPrice} руб`;
+            }
+
+            productContentBlock.onclick = handleProductContentBlockClick;
+
+            function handleProductContentBlockClick(event) {
                 const element = event.target.closest(".content__item");
                 let input = element.getElementsByClassName("counter__input")[0];
                 const action = event.target.dataset.action;
@@ -135,24 +146,31 @@ function displayProducts(clickedElement) {
                 } else if (action === "increase") {
                     input.value++;
                 }
-            };
+            }
         }
     });
 }
 
 displayProducts(PRODUCT_INITIAL_VALUE);
 
-navPanel.addEventListener("click", (event) => {
+navPanel.addEventListener("click", handleNavButtonClick);
+
+function handleNavButtonClick(event) {
     const activeElement = document.getElementsByClassName("content__element__active")[0];
     activeElement.classList.remove("content__element__active");
     event.target.classList.add("content__element__active");
     removeElements(productContentBlock);
     displayProducts(event.target.id);
-});
+}
 
-//ниже функционал переключения между вкладками
 function displayAdditive(elements, oldPrice, activePosition) {
     removeElements(dialogContent);
+    function displayActiveElement() {
+        if (additions[activePosition] !== "Не указан") {
+            const activeElement = document.getElementById(additions[activePosition]);
+            activeElement.classList.add("dialog__additive__active");
+        }
+    }
     dialogContent.insertAdjacentHTML("beforeend", `<div class="dialog__elements"></div>`);
     const elementsContainer = document.getElementsByClassName("dialog__elements")[0];
 
@@ -167,7 +185,9 @@ function displayAdditive(elements, oldPrice, activePosition) {
         let newPrice = 0;
 
         const element = document.getElementById(elements[key].name);
-        element.addEventListener("click", () => {
+        element.addEventListener("click", handleAdditiveElementClick);
+
+        function handleAdditiveElementClick() {
             newPrice = additivePrice + oldPrice;
             const itogPrise = document.getElementsByClassName("itog__prise")[0];
             activePosition === "sizes" && (itogPrise.innerHTML = `Цена: ${newPrice}руб`);
@@ -181,7 +201,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
                 (additions[activePosition] = elements[key].name),
                 (additions.price = newPrice)
             );
-        });
+        }
     }
     activePosition === "sizes" &&
         dialogContent.insertAdjacentHTML(
@@ -189,11 +209,7 @@ function displayAdditive(elements, oldPrice, activePosition) {
             /*html*/ `<div class="itog__prise prise">Цена: ${oldPrice}руб</div>`
         );
 
-    if (additions[activePosition] !== "Не указан") {
-        //Прив возвращении на вкладку где уже был указан элемент отрисовать его
-        const activeElement = document.getElementById(additions[activePosition]);
-        activeElement.classList.add("dialog__additive__active");
-    }
+    displayActiveElement();
 }
 
 function displayFillings(elements, activePosition) {
@@ -215,23 +231,30 @@ function displayFillings(elements, activePosition) {
 
         const element = document.getElementById(elements[key].name);
 
-        element.addEventListener("click", (event) => {
+        element.addEventListener("click", handleFillingsActivity);
+
+        function handleFillingsActivity(event) {
             const activeElement = event.currentTarget;
             if (activeElement.classList.contains("dialog__additive__active")) {
-                //убираем активность, уменьшаем цену и убираем элемент из массива
-                fillings.forEach(function (item, index) {
-                    if (item === activeElement.id) fillings.splice(index, 1);
-                });
-                activeElement.classList.remove("dialog__additive__active");
-                newPrice -= additivePrice + additions.price;
+                RemoveFilling(activeElement);
             } else if (fillings.length < 3) {
-                //добавляем активность, добавляем к цене и добавляем элемент в массив
-                fillings.push(activeElement.id);
-                activeElement.classList.add("dialog__additive__active");
-                newPrice = additivePrice + additions.price;
+                AddFilling(activeElement);
             }
             return (additions[activePosition] = fillings), (additions.price = newPrice);
-        });
+        }
+        function AddFilling(activeElement) {
+            fillings.push(activeElement.id);
+            activeElement.classList.add("dialog__additive__active");
+            newPrice = additivePrice + additions.price;
+        }
+
+        function RemoveFilling(activeElement) {
+            fillings.forEach(function (item, index) {
+                if (item === activeElement.id) fillings.splice(index, 1);
+            });
+            activeElement.classList.remove("dialog__additive__active");
+            newPrice = additions.price - additivePrice;
+        }
     }
 
     if (additions[activePosition] !== "Не указан") {
@@ -301,20 +324,24 @@ function displayReady() {
     const input = resultContainer.getElementsByClassName("counter__input")[0];
     const price = resultContainer.getElementsByClassName("result__prise")[0];
 
-    decrease.addEventListener("click", () => {
+    decrease.addEventListener("click", handleDecreaseClick);
+    function handleDecreaseClick() {
         count > 1 && count--;
         input.value = count;
         additions.count = count;
         price.innerHTML = `Цена: ${count * additions.price}руб.`;
-    });
-    increase.addEventListener("click", () => {
+    }
+    increase.addEventListener("click", handleIncreaseClick);
+    function handleIncreaseClick() {
         count++;
         input.value = count;
         additions.count = count;
         price.innerHTML = `Цена: ${count * additions.price}руб.`;
-    });
+    }
 
-    basketButton.addEventListener("click", () => {
+    basketButton.addEventListener("click", handleBasketButtonClick);
+
+    function handleBasketButtonClick() {
         if (count > 0) {
             totalPrice += count * additions.price;
             const priseString = document.getElementsByClassName("basket__prise")[0];
@@ -330,21 +357,16 @@ function displayReady() {
             displaySelectedItems();
             priseString.innerHTML = `Итого: ${totalPrice} руб`;
             additions = {
-                sizes: "Не указан",
-                breads: "Не указан",
-                vegetables: "Не указан",
-                sauces: "Не указан",
-                fillings: "Не указан",
-                price: 0,
-                name: "",
-                count: 1,
+                ...ADDITIONS_INITIAL_VALUE,
             };
         }
-    });
+    }
 
-    input.addEventListener("input", () => {
+    input.addEventListener("input", handleInputChange);
+
+    function handleInputChange() {
         count = input.value;
-    });
+    }
 }
 
 const tabsAdditives = {
@@ -360,7 +382,8 @@ function displayProductParameters(clickedAdditives) {
     tabsAdditives[clickedAdditives]();
 }
 
-nextDialogButton.addEventListener("click", () => {
+nextDialogButton.addEventListener("click", handleNextDialogButtonClick);
+function handleNextDialogButtonClick() {
     const activeElement = document.getElementsByClassName("dialog__element__active")[0];
     const newActiveElement = activeElement.nextSibling.nextSibling;
     activeElement.classList.remove("dialog__element__active");
@@ -372,9 +395,10 @@ nextDialogButton.addEventListener("click", () => {
         previousDialogButton.classList.remove("dialog__button__none");
     }
     displayProductParameters(newActiveElement.id);
-});
+}
 
-previousDialogButton.addEventListener("click", () => {
+previousDialogButton.addEventListener("click", handlePreviousDialogButtonClick);
+function handlePreviousDialogButtonClick() {
     const activeElement = document.getElementsByClassName("dialog__element__active")[0];
     const newActiveElement = activeElement.previousSibling.previousSibling;
     activeElement.classList.remove("dialog__element__active");
@@ -386,9 +410,10 @@ previousDialogButton.addEventListener("click", () => {
         nextDialogButton.classList.remove("dialog__button__none");
     }
     displayProductParameters(newActiveElement.id);
-});
+}
 
-dialogPanel.addEventListener("click", (event) => {
+dialogPanel.addEventListener("click", handleDialogPanelClick);
+function handleDialogPanelClick(event) {
     const activeNaigationElement = event.target;
     const activeElement = document.getElementsByClassName("dialog__element__active")[0];
     activeElement.classList.remove("dialog__element__active");
@@ -404,7 +429,7 @@ dialogPanel.addEventListener("click", (event) => {
         previousDialogButton.classList.remove("dialog__button__none");
     }
     displayProductParameters(activeNaigationElement.id);
-});
+}
 
 function displaySelectedItems() {
     const basketContainer = document.getElementsByClassName("basket__elements")[0];
@@ -423,13 +448,14 @@ function displaySelectedItems() {
         basketContainer.insertAdjacentHTML("beforeend", basketElement);
 
         const container = document.getElementById(item.id);
-        container.addEventListener("click", function () {
+        container.addEventListener("click", handleBasketElementClick);
+        function handleBasketElementClick() {
             const priseString = document.getElementsByClassName("basket__prise")[0];
             finalProductList.splice(basketContainer.id, 1);
             totalPrice -= item.prise;
             priseString.innerHTML = `Итого: ${totalPrice} руб`;
             basketContainer.removeChild(container);
-        });
+        }
     });
 }
 
@@ -439,17 +465,11 @@ function removeElements(element) {
     }
 }
 
-document.querySelector("#none").addEventListener("click", function () {
+document.querySelector("#none").addEventListener("click", handleeExitButtonClick);
+function handleeExitButtonClick() {
     dialog.close();
     additions = {
-        sizes: "Не указан",
-        breads: "Не указан",
-        vegetables: "Не указан",
-        sauces: "Не указан",
-        fillings: "Не указан",
-        price: 0,
-        name: "",
-        count: 1,
+        ...ADDITIONS_INITIAL_VALUE,
     };
     removeElements(dialogContent);
-});
+}
