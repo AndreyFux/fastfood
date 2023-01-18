@@ -12,24 +12,93 @@ const ADDITIONS_INITIAL_VALUE = {
     count: 1,
 };
 
-let additions = { ...ADDITIONS_INITIAL_VALUE };
-console.log(additions);
+const additions = { ...ADDITIONS_INITIAL_VALUE };
 
 const finalProductList = [];
 let totalPrice = 0;
 
-const productContentBlock = document.getElementsByClassName("content__information")[0];
+function getHtmlElement(className) {
+    return document.getElementsByClassName(className)[0];
+}
+const productContentBlock = getHtmlElement("content__information");
 const navPanel = document.getElementById("content__navigation");
 
-const dialogContent = document.getElementsByClassName("dialog__output")[0];
+const dialogContent = getHtmlElement("dialog__output");
 const dialogPanel = document.getElementById("dialog__navigation");
 const dialog = document.querySelector("dialog");
-const nextDialogButton = document.getElementsByClassName(
-    "switching-buttons__next-button"
-)[0];
-const previousDialogButton = document.getElementsByClassName(
-    "switching-buttons__previous-button"
-)[0];
+const nextDialogButton = getHtmlElement("switching-buttons__next-button");
+const previousDialogButton = getHtmlElement("switching-buttons__previous-button");
+
+function handleBasketButtonClick(event) {
+    let activeElement = null;
+    const element = event.target.closest(".content__item");
+    const input = element.getElementsByClassName("counter__input")[0];
+    const name = event.target
+        .closest(".content__item")
+        .getElementsByClassName("item__name")[0].innerHTML;
+    data.menu.forEach((item) => {
+        if (item.name === name) {
+            return (activeElement = item);
+        }
+    });
+    if (activeElement.category === PRODUCT_INITIAL_VALUE) {
+        openModal(input, activeElement);
+    } else {
+        addElementInBasket(input, activeElement);
+    }
+}
+
+function openModal(input, item) {
+    const activeElement = getHtmlElement("dialog__element__active");
+
+    if (activeElement.id !== "sizes") {
+        const newActiveElement = document.getElementById("sizes");
+        activeElement.classList.remove("dialog__element__active");
+        newActiveElement.classList.add("dialog__element__active");
+        previousDialogButton.classList.add("dialog__button__none");
+    }
+    dialog.showModal();
+    displayAdditive(data.sizes, item.price, "sizes");
+    additions.name = item.name;
+    additions.count = input.value;
+}
+
+function addElementInBasket(input, item) {
+    const priseString = getHtmlElement("basket__prise");
+
+    finalProductList.push({
+        name: item.name,
+        count: input.value,
+        id: finalProductList.length
+            ? finalProductList[finalProductList.length - 1].id + 1
+            : 0,
+        prise: input.value * item.price,
+    });
+    displaySelectedItems();
+
+    totalPrice += input.value * item.price;
+    priseString.innerHTML = `Итого: ${totalPrice} руб`;
+}
+
+function handleCounterClick(action, input) {
+    if (action === "decrease") {
+        input.value > 1 && input.value--;
+    } else if (action === "increase") {
+        input.value++;
+    }
+}
+
+function handleProductContentBlockClick(event) {
+    const element = event.target.closest(".content__item");
+    let input = element.getElementsByClassName("counter__input")[0];
+    const action = event.target.dataset.action;
+    handleCounterClick(action, input);
+    const basketButton = element.getElementsByClassName("item__button")[0];
+    event.target === basketButton &&
+        basketButton.addEventListener("click", handleBasketButtonClick(event));
+}
+
+productContentBlock.onclick = handleProductContentBlockClick;
 
 function displayProducts(clickedElement) {
     data.menu.forEach((item) => {
@@ -84,69 +153,6 @@ function displayProducts(clickedElement) {
                                         <button class="button item__button">В КОРЗИНУ</button>
                                     </div>`;
             productContentBlock.insertAdjacentHTML("beforeend", element);
-
-            const priseString = document.getElementsByClassName("basket__prise")[0];
-            const elements = document.getElementsByClassName("content__item");
-            const activeElement = elements[elements.length - 1];
-            const BasketButton = activeElement.getElementsByClassName("item__button")[0];
-
-            BasketButton.addEventListener("click", handleBasketButtonClick);
-
-            function handleBasketButtonClick(event) {
-                const element = event.target.closest(".content__item");
-                let input = element.getElementsByClassName("counter__input")[0];
-
-                if (item.category === PRODUCT_INITIAL_VALUE) {
-                    OpenModal(input);
-                } else {
-                    AddElementInBasket(input);
-                }
-            }
-
-            function OpenModal(input) {
-                const activeElement = document.getElementsByClassName(
-                    "dialog__element__active"
-                )[0];
-
-                if (activeElement.id !== "sizes") {
-                    const newActiveElement = document.getElementById("sizes");
-                    activeElement.classList.remove("dialog__element__active");
-                    newActiveElement.classList.add("dialog__element__active");
-                    previousDialogButton.classList.add("dialog__button__none");
-                }
-                dialog.showModal();
-                displayAdditive(data.sizes, item.price, "sizes");
-                additions.name = item.name;
-                additions.count = input.value;
-            }
-
-            function AddElementInBasket(input) {
-                finalProductList.push({
-                    name: item.name,
-                    count: input.value,
-                    id: finalProductList.length
-                        ? finalProductList[finalProductList.length - 1].id + 1
-                        : 0,
-                    prise: input.value * item.price,
-                });
-                displaySelectedItems();
-
-                totalPrice += input.value * item.price;
-                priseString.innerHTML = `Итого: ${totalPrice} руб`;
-            }
-
-            productContentBlock.onclick = handleProductContentBlockClick;
-
-            function handleProductContentBlockClick(event) {
-                const element = event.target.closest(".content__item");
-                let input = element.getElementsByClassName("counter__input")[0];
-                const action = event.target.dataset.action;
-                if (action === "decrease") {
-                    input.value > 1 && input.value--;
-                } else if (action === "increase") {
-                    input.value++;
-                }
-            }
         }
     });
 }
@@ -163,16 +169,35 @@ function handleNavButtonClick(event) {
     displayProducts(event.target.id);
 }
 
+function displayActiveElement(activePosition) {
+    if (activePosition !== "Не указан") {
+        const activeElement = document.getElementById(activePosition);
+        activeElement.classList.add("dialog__additive__active");
+    }
+}
+
+function handleAdditiveElementClick(
+    newPrice,
+    additivePrice,
+    oldPrice,
+    activePosition,
+    element,
+    elements
+) {
+    newPrice = additivePrice + oldPrice;
+    const itogPrise = getHtmlElement("itog__prise");
+    activePosition === "sizes" && (itogPrise.innerHTML = `Цена: ${newPrice}руб`);
+    const activeElement = getHtmlElement("dialog__additive__active");
+    activeElement && activeElement.classList.remove("dialog__additive__active");
+    element.classList.add("dialog__additive__active");
+    return (additions[activePosition] = elements.name), (additions.price = newPrice);
+}
+
 function displayAdditive(elements, oldPrice, activePosition) {
     removeElements(dialogContent);
-    function displayActiveElement() {
-        if (additions[activePosition] !== "Не указан") {
-            const activeElement = document.getElementById(additions[activePosition]);
-            activeElement.classList.add("dialog__additive__active");
-        }
-    }
     dialogContent.insertAdjacentHTML("beforeend", `<div class="dialog__elements"></div>`);
-    const elementsContainer = document.getElementsByClassName("dialog__elements")[0];
+    const elementsContainer = getHtmlElement("dialog__elements");
+    let newPrice = 0;
 
     for (const key in elements) {
         const additivePrice = elements[key].price;
@@ -184,24 +209,17 @@ function displayAdditive(elements, oldPrice, activePosition) {
         elementsContainer.insertAdjacentHTML("beforeend", additiveElement);
         let newPrice = 0;
 
-        const element = document.getElementById(elements[key].name);
-        element.addEventListener("click", handleAdditiveElementClick);
-
-        function handleAdditiveElementClick() {
-            newPrice = additivePrice + oldPrice;
-            const itogPrise = document.getElementsByClassName("itog__prise")[0];
-            activePosition === "sizes" && (itogPrise.innerHTML = `Цена: ${newPrice}руб`);
-            const activeElement = document.getElementsByClassName(
-                "dialog__additive__active"
-            );
-            activeElement[0] &&
-                activeElement[0].classList.remove("dialog__additive__active");
-            element.classList.add("dialog__additive__active");
-            return (
-                (additions[activePosition] = elements[key].name),
-                (additions.price = newPrice)
-            );
-        }
+        const htmlElement = document.getElementById(elements[key].name);
+        htmlElement.addEventListener("click", () =>
+            handleAdditiveElementClick(
+                newPrice,
+                additivePrice,
+                oldPrice,
+                activePosition,
+                htmlElement,
+                elements[key]
+            )
+        );
     }
     activePosition === "sizes" &&
         dialogContent.insertAdjacentHTML(
@@ -209,16 +227,56 @@ function displayAdditive(elements, oldPrice, activePosition) {
             /*html*/ `<div class="itog__prise prise">Цена: ${oldPrice}руб</div>`
         );
 
-    displayActiveElement();
+    displayActiveElement(additions[activePosition]);
+}
+
+function addFilling(activeElement, fillings, newPrice, additivePrice) {
+    fillings.push(activeElement.id);
+    activeElement.classList.add("dialog__additive__active");
+    return (newPrice = additivePrice + additions.price);
+}
+
+function removeFilling(activeElement, fillings, newPrice, additivePrice) {
+    fillings.forEach(function (item, index) {
+        if (item === activeElement.id) fillings.splice(index, 1);
+    });
+    activeElement.classList.remove("dialog__additive__active");
+    return (newPrice = additions.price - additivePrice);
+}
+
+function handleFillingsActivity(
+    event,
+    fillings,
+    newPrice,
+    additivePrice,
+    activePosition
+) {
+    const activeElement = event.currentTarget;
+    if (activeElement.classList.contains("dialog__additive__active")) {
+        newPrice = removeFilling(activeElement, fillings, newPrice, additivePrice);
+    } else if (fillings.length < 3) {
+        newPrice = addFilling(activeElement, fillings, newPrice, additivePrice);
+    }
+    return (additions[activePosition] = fillings), (additions.price = newPrice);
+}
+
+function displayActiveFillings(activeFillings) {
+    if (activeFillings !== "Не указан") {
+        activeFillings.forEach(function (item) {
+            const activeElement = document.getElementById(item);
+            activeElement.classList.add("dialog__additive__active");
+        });
+    }
 }
 
 function displayFillings(elements, activePosition) {
     removeElements(dialogContent);
     dialogContent.insertAdjacentHTML("beforeend", `<div class="dialog__elements"></div>`);
-    const elementsContainer = document.getElementsByClassName("dialog__elements")[0];
+    const elementsContainer = getHtmlElement("dialog__elements");
     let newPrice = 0;
     const fillings =
         typeof additions[activePosition] === "string" ? [] : additions[activePosition];
+
     for (const key in elements) {
         const additivePrice = elements[key].price;
 
@@ -231,38 +289,17 @@ function displayFillings(elements, activePosition) {
 
         const element = document.getElementById(elements[key].name);
 
-        element.addEventListener("click", handleFillingsActivity);
-
-        function handleFillingsActivity(event) {
-            const activeElement = event.currentTarget;
-            if (activeElement.classList.contains("dialog__additive__active")) {
-                RemoveFilling(activeElement);
-            } else if (fillings.length < 3) {
-                AddFilling(activeElement);
-            }
-            return (additions[activePosition] = fillings), (additions.price = newPrice);
-        }
-        function AddFilling(activeElement) {
-            fillings.push(activeElement.id);
-            activeElement.classList.add("dialog__additive__active");
-            newPrice = additivePrice + additions.price;
-        }
-
-        function RemoveFilling(activeElement) {
-            fillings.forEach(function (item, index) {
-                if (item === activeElement.id) fillings.splice(index, 1);
-            });
-            activeElement.classList.remove("dialog__additive__active");
-            newPrice = additions.price - additivePrice;
-        }
+        element.addEventListener("click", (event) =>
+            handleFillingsActivity(
+                event,
+                fillings,
+                newPrice,
+                additivePrice,
+                activePosition
+            )
+        );
     }
-
-    if (additions[activePosition] !== "Не указан") {
-        additions[activePosition].forEach(function (item) {
-            const activeElement = document.getElementById(item);
-            activeElement.classList.add("dialog__additive__active");
-        });
-    }
+    displayActiveFillings(additions[activePosition]);
 }
 
 function displayReady() {
@@ -317,7 +354,7 @@ function displayReady() {
                                     </div>
                                 </div>`;
     dialogContent.insertAdjacentHTML("beforeend", readyElement);
-    const resultContainer = document.getElementsByClassName("result__count-container")[0];
+    const resultContainer = getHtmlElement("result__count-container");
     const decrease = resultContainer.getElementsByClassName("counter__decrease")[0];
     const increase = resultContainer.getElementsByClassName("counter__increase")[0];
     const basketButton = resultContainer.getElementsByClassName("result__button")[0];
@@ -344,7 +381,7 @@ function displayReady() {
     function handleBasketButtonClick() {
         if (count > 0) {
             totalPrice += count * additions.price;
-            const priseString = document.getElementsByClassName("basket__prise")[0];
+            const priseString = getHtmlElement("basket__prise");
             dialog.close();
             finalProductList.push({
                 name: additions.name,
@@ -384,7 +421,7 @@ function displayProductParameters(clickedAdditives) {
 
 nextDialogButton.addEventListener("click", handleNextDialogButtonClick);
 function handleNextDialogButtonClick() {
-    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
+    const activeElement = getHtmlElement("dialog__element__active");
     const newActiveElement = activeElement.nextSibling.nextSibling;
     activeElement.classList.remove("dialog__element__active");
     newActiveElement.classList.add("dialog__element__active");
@@ -399,7 +436,7 @@ function handleNextDialogButtonClick() {
 
 previousDialogButton.addEventListener("click", handlePreviousDialogButtonClick);
 function handlePreviousDialogButtonClick() {
-    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
+    const activeElement = getHtmlElement("dialog__element__active");
     const newActiveElement = activeElement.previousSibling.previousSibling;
     activeElement.classList.remove("dialog__element__active");
     newActiveElement.classList.add("dialog__element__active");
@@ -415,7 +452,7 @@ function handlePreviousDialogButtonClick() {
 dialogPanel.addEventListener("click", handleDialogPanelClick);
 function handleDialogPanelClick(event) {
     const activeNaigationElement = event.target;
-    const activeElement = document.getElementsByClassName("dialog__element__active")[0];
+    const activeElement = getHtmlElement("dialog__element__active");
     activeElement.classList.remove("dialog__element__active");
     activeNaigationElement.classList.add("dialog__element__active");
     if (activeNaigationElement.id === "ready") {
@@ -432,7 +469,7 @@ function handleDialogPanelClick(event) {
 }
 
 function displaySelectedItems() {
-    const basketContainer = document.getElementsByClassName("basket__elements")[0];
+    const basketContainer = getHtmlElement("basket__elements");
     removeElements(basketContainer);
 
     finalProductList.forEach((item) => {
@@ -450,7 +487,7 @@ function displaySelectedItems() {
         const container = document.getElementById(item.id);
         container.addEventListener("click", handleBasketElementClick);
         function handleBasketElementClick() {
-            const priseString = document.getElementsByClassName("basket__prise")[0];
+            const priseString = getHtmlElement("basket__prise");
             finalProductList.splice(basketContainer.id, 1);
             totalPrice -= item.prise;
             priseString.innerHTML = `Итого: ${totalPrice} руб`;
@@ -465,7 +502,7 @@ function removeElements(element) {
     }
 }
 
-document.querySelector("#none").addEventListener("click", handleeExitButtonClick);
+document.querySelector("#close").addEventListener("click", handleeExitButtonClick);
 function handleeExitButtonClick() {
     dialog.close();
     additions = {
